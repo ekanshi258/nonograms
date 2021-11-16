@@ -104,6 +104,78 @@ def print_solution(row_marked, n, m):
         print('')
 
 
+def checker(r, c, n, m):
+    print(
+        "Enter your output line by line. Leave a space between each character."
+    )
+    print("An 'x' marks a coloured spot, '.' marks an empty spot.")
+    print("Do not enter the numbers at the end of the rows and columns.")
+
+    ansgrid = []
+    for i in range(n):
+        e = input()
+        ansrow = e.split()
+        ansgrid.append(ansrow)
+    # print(ansgrid)
+    print('Please wait...')
+
+    # Checking rows
+    for i in range(n):
+        k = 0
+        j = 0
+        c_dots = 0
+        c_xs = 0
+        while j < m and ansrow[j] == '.':
+            j += 1
+
+        while j < m and k < len(r[i]):
+            # atleast one dot before a line of x's, unless it's the first x
+            if k != 0 and c_dots == 0:
+                return False
+            c_dots = 0
+            c_xs = 0
+            while j < m and ansrow[j] == 'x':
+                c_xs += 1
+                j += 1
+            if r[i][k] != c_xs:
+                return False
+            else:
+                k += 1
+
+            while j < m and ansrow[j] == '.':
+                j += 1
+                c_dots += 1
+
+    # Now we have the grid, check columns
+    for j in range(m):
+        k = 0
+        i = 0
+        c_dots = 0
+        c_xs = 0
+        while i < n and ansgrid[i][j] == '.':
+            i += 1
+
+        while i < n and k < len(c[j]):
+            # atleast one dot before a line of x's, unless it's the first x
+            if k != 0 and c_dots == 0:
+                return False
+            c_dots = 0
+            c_xs = 0
+            while i < n and ansgrid[i][j] == 'x':
+                c_xs += 1
+                i += 1
+            if c[j][k] != c_xs:
+                return False
+            else:
+                k += 1
+
+            while i < n and ansgrid[i][j] == '.':
+                i += 1
+                c_dots += 1
+
+    return True
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Enter row and column numbers with --rows and --cols")
@@ -160,10 +232,16 @@ if __name__ == "__main__":
     print_board(r, c, n, m)
 
     choice = input(
-        '\nDo you want to see the solution? Do not enter anything if you want to wait. Choosing \'n\' will exit the game. (Y/n)'
+        '\nPress C to enter and check your solution. \nDo you want to see a solution instead? Do not enter anything if you want to wait. Choosing \'n\' will exit the game. (Y/n)'
     )
     if choice == 'n' or choice == 'N':
-        print('Bye!')
+        print('Bye :)')
+    elif choice == 'C' or choice == 'c':
+        if checker(r, c, n, m):
+            print('Correct answer!')
+        else:
+            print('Oops, that\'s not right. Possible solution:')
+            print_solution(ans_r, n, m)
     else:
         print('\nPossible solution:')
         print_solution(ans_r, n, m)
